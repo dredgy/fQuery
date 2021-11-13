@@ -44,7 +44,7 @@ f(%"div.className#id")
 let fQueryDocument = f(%document)
 
 let button = document.querySelector "button"
-let fqueryButton = f(%buttons)
+let fqueryButton = f(%button)
 
 let buttons = f(%"button")
 ```
