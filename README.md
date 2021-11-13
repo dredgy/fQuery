@@ -54,29 +54,52 @@ let buttons = f(String "button")
 <p>Just like you would in jQuery (that will be a recurring theme), except functions are called with pipe operators rather than on an object.</p>
 <p>There are 3 class functions implemented at this stage.</p>
 
-#### addClass
+#### addClass (className: string)
 <small>Adds a class to the selected elements</small>
 ```
-	let links = f("a[href]") |> addClass "active"
+	let links = f(String "a[href]") |> addClass "active"
 ```
 
-#### removeClass
+#### removeClass (className: string)
 <small>Removes a class to the selected elements</small>
 ```
-	let links = f("a[href]") |> removeClass "active"
+	let links = f(String "a[href]") |> removeClass "active"
 ```
 	
-#### toggleClass
+#### toggleClass (className: string)
 <small>If an element already has a class, remove it. Else add it.</small>
 ```
-	let links = f("a[href]") |> toggleClass "active"
+	let links = f(String "a[href]") |> toggleClass "active"
 ```
 
 #### Not yet implemented
 <p>jQuery allows you to pass an array of class names to the class functions. I do not intend to overload the addClass or removeClass functions,
-but will likely implement separate `addClasses` and `removeClasses` functions for handling more than one at once.
+but will likely implement separate <b>addClasses</b> and <b>removeClasses</b> functions for handling more than one at once.
 </p>
 
 
 ### Attributes and Style functions
-<p>The functions here have the same name as the original jQuery functions</p>
+<p>The functions here have the same name as the original jQuery functions.</p>
+
+#### attr (attribute: string) (value: string)
+<small>Sets an attribute on selected elements.</small>
+
+```f#
+	let links = f(String "a[href]") 
+					|> attr "href" "https://github.com"
+```
+
+
+#### css (property: string) (value: string)
+<small>Sets a CSS property of the selected elements</small>
+
+```
+	let links = f(String "a[href]") 
+					|> css "color" "red"
+					|> css "background-color" "blue"
+```
+
+#### Not yet implemented
+<p>I'm probably not aware of all of jQuery's functions, <b>prop()</b> is probably the largest and most important to implement.</p>
+
+
