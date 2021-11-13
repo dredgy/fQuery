@@ -162,7 +162,7 @@ If a selector is specified, the event will only be fired if an element matching 
 let docReady e = console.log e
 f (%document) |> on "ready" "" docReady //fires when the document is ready
 
-f (String "body")
+f (%"body")
     |> on "click" "" (fun _ -> console.log("Body clicked")) //Fires whenever the body is clicked
     |> on "click, mouseover" "button" (fun _ -> console.log("Just a button")) //Only fires if a button is clicked (or hovered over)
 ```
