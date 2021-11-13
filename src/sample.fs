@@ -1,8 +1,6 @@
 ﻿module sample
 open fQuery
 open Browser
-open Browser.Types
-
 
 let docReady e =
     let p = f(%"p")
