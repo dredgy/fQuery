@@ -147,8 +147,25 @@ f (String "body")
 
 > #### Not Implement yet
 <b>off()</b> is a little harder to implement than I thought. I will have to see how jQuery handles it because the implementation I have is quite buggy.
-```
 
+
+### Chaining with Pipes
+
+<p>Pipes are the whole point of F# right?</p>
+<p>All fQuery functions currently implemented both take and return a value of type fQuery. So you can chain them infinitely</p>
+
+```
+    let paragraphs = f(%"p")
+                |> css "color" "blue"
+                |> css "width" "200px"
+                |> css "height" "200px"
+                |> last //Changes from here will only apply to the last paragraph
+                |> css "color" "red"
+                |> attr "id" "woot"
+                |> on "click" "" (fun e -> console.log "Hi" )
+                |> addClass "testClass"
+                |> removeClass "my-button"
+```				
 
 
 
