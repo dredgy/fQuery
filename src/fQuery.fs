@@ -74,7 +74,16 @@ let closest (selector: string) (fquery: fQuery) : fQuery =
         |> Array.map (fun elem -> (Option.get elem) :?> HTMLElement)
         |> Array.distinct
 
-let parent (fquery: fQuery) : fQuery = fquery|> Array.map (fun elem -> elem.parentElement)
+let parent (selector: string) (fquery: fQuery) : fQuery =
+    fquery
+        |> Array.filter(
+            fun elem ->
+                if selector <> "" then
+                    elem.parentElement <> null && elem.parentElement.matches selector
+                else elem.parentElement <> null
+            )
+        |> Array.map (fun elem -> elem.parentElement)
+
 
 let private getEventStringAlias event =
     match event with

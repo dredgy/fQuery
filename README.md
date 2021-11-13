@@ -199,7 +199,9 @@ f(%"span.selected")
 
 >#### parent (selector: string)
 <small>
-Selects the direct parent of the selected element
+Selects the direct parent of the selected element. 
+Selector can be either an empty string "" or a query selector. 
+If a selector is passed in, then if the parent does not match that selector it will be filtered out.
 </small>
 
 ```f#
