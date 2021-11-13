@@ -62,7 +62,7 @@ let buttons = f(String "button")
 ```
 
 > #### removeClass (className: string)
-<small>Removes a class to the selected elements</small>
+<small>Removes a class from the selected elements</small>
 ```f#
 	let links = f(String "a[href]") |> removeClass "active"
 ```
