@@ -48,13 +48,10 @@ let fqueryButton = f(%button)
 
 let buttons = f(%"button")
 ```
-
-<p>
-At this stage, f() returns a collection of HTMLElements. Originally it returned a special union type of "fQuery". Currently the fquery type is just defined as HTMLElement[]
-since the item could be either a collection of elements or a Document. For now, I have a workaround but not sure if it will hold when things get more complex.
-</p>
-
 <p>Are all perfectly valid and will return an fQuery type which can be passed to other fQuery functions.</p>
+<p>
+At this stage, f() returns a collection of HTMLElements. Originally it returned a special union type of "fQuery". Since the item could be either a collection of elements or a Document. For now, I have a workaround that means I don't have to handle cases where document is the selected node. I'm not sure if it will hold when things get more complex but in the meantime the fQuery type is simply defined as an alias of HTMLElement[]
+</p>
 
 
 ### Chaining with Pipes
