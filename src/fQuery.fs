@@ -23,7 +23,7 @@ type fQuery =
 type selector =
     | String of string
     | Element of Element
-    | Document of Document
+    | D of Document
 
 let f (selector: selector) : fQuery =
     match selector with
@@ -40,7 +40,7 @@ let f (selector: selector) : fQuery =
                 elementList
                     |> JS.Constructors.Array.from
                     |> Elements
-    | Document document -> Doc document
+    | D document -> Doc document
 
 
 let css (property: string) (value: string) fquery =

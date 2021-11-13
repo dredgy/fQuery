@@ -18,7 +18,7 @@ let docReady (_) =
     console.log p
 
 
-f(Document document)
+f (D document)
     |> on "ready" "" docReady
     |> on "click" "button" (fun _ -> console.log("Lol"))
     |> ignore
