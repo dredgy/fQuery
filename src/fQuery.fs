@@ -1,16 +1,11 @@
 module fQuery
 
-open System
+
 open Browser.Types
 open Fable.Core
-open Fable.Core.JsInterop
-open Fable
 open Browser.Dom
-open Browser.Css
 open Browser.CssExtensions
-open Browser.Blob
-open Browser.Event
-open Browser.DomExtensions
+
 
 let inline (~%) (x: ^A) : ^B = (^B : (static member From: ^A -> ^B) x)
 let console = console
@@ -73,13 +68,18 @@ let text (value: string) fquery =
     let elementFunc = fun (element: HTMLElement) -> element.innerText <- value
     applyUnitFunction elementFunc documentFunc fquery
 
+let html (value: string) fquery =
+    let documentFunc = fun _ -> ()
+    let elementFunc = fun (element: HTMLElement) -> element.innerHTML <- value
+    applyUnitFunction elementFunc documentFunc fquery
+
 let private getEventStringAlias event =
     match event with
     | "ready" -> "DOMContentLoaded"
     | _ -> event
 
 
-let eventOnTarget (e: Event) (selector: string) (callback: Event->unit) =
+let private eventOnTarget (e: Event) (selector: string) (callback: Event->unit) =
     let target: HTMLElement = e.target :?> HTMLElement
     if(target.matches(selector)) then
         callback e
@@ -87,7 +87,6 @@ let eventOnTarget (e: Event) (selector: string) (callback: Event->unit) =
 (* Event Handling Function *)
 let on (event: string) (selector: string) (callback: Event -> unit) fquery =
     let eventString = getEventStringAlias event
-
     let elements = get fquery
 
     elements |> Array.iter (

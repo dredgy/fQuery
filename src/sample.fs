@@ -3,7 +3,7 @@ open fQuery
 open Browser
 
 let docReady e =
-    let p = f(%"button")
+    let button = f(%"button")
                 |> css "color" "blue"
                 |> css "width" "200px"
                 |> css "height" "200px"
@@ -17,9 +17,9 @@ let docReady e =
 
     console.log p
 
-let buttonClicked _ = console.log "Hi"
+let bodyClicked _ = console.log "Body Clicked"
 
 f(%document)
     |> on "ready" "" docReady
-    |> on "click" "button" buttonClicked
+    |> on "click" "" bodyClicked
     |> ignore
