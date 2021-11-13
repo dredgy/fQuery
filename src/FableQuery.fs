@@ -1,4 +1,4 @@
-module App
+module FableQuery
 
 open Browser.Dom
 
