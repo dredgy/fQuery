@@ -54,25 +54,25 @@ let buttons = f(String "button")
 <p>Just like you would in jQuery (that will be a recurring theme), except functions are called with pipe operators rather than on an object.</p>
 <p>There are 3 class functions implemented at this stage.</p>
 
-#### addClass (className: string)
+> #### addClass (className: string)
 <small>Adds a class to the selected elements</small>
 ```f#
 	let links = f(String "a[href]") |> addClass "active"
 ```
 
-#### removeClass (className: string)
+> #### removeClass (className: string)
 <small>Removes a class to the selected elements</small>
 ```f#
 	let links = f(String "a[href]") |> removeClass "active"
 ```
 	
-#### toggleClass (className: string)
+> #### toggleClass (className: string)
 <small>If an element already has a class, remove it. Else add it.</small>
 ```f#
 	let links = f(String "a[href]") |> toggleClass "active"
 ```
 
-#### Not yet implemented
+> #### Not yet implemented
 <p>jQuery allows you to pass an array of class names to the class functions. I do not intend to overload the addClass or removeClass functions,
 but will likely implement separate <b>addClasses</b> and <b>removeClasses</b> functions for handling more than one at once.
 </p>
@@ -81,7 +81,7 @@ but will likely implement separate <b>addClasses</b> and <b>removeClasses</b> fu
 ### Attributes and Style functions
 <p>The functions here have the same name as the original jQuery functions.</p>
 
-#### attr (attribute: string) (value: string)
+> #### attr (attribute: string) (value: string)
 <small>Sets an attribute on selected elements.</small>
 
 ```f#
@@ -90,7 +90,7 @@ but will likely implement separate <b>addClasses</b> and <b>removeClasses</b> fu
 ```
 
 
-#### css (property: string) (value: string)
+> #### css (property: string) (value: string)
 <small>Sets a CSS property of the selected elements</small>
 
 ```f#
@@ -99,19 +99,19 @@ but will likely implement separate <b>addClasses</b> and <b>removeClasses</b> fu
 			|> css "background-color" "blue"
 ```
 
-#### Not yet implemented
+> #### Not yet implemented
 <p>I'm probably not aware of all of jQuery's functions, <b>prop()</b> is probably the largest and most important to implement.</p>
 
 ### Plucking from the fQuery collection
 
-#### first
+> #### first
 <small>Returns the first item in an fQuery collections</small>
 
 ```f#
 	let firstParagraph = f(String "p") |> first
 ```	
 
-#### last
+> #### last
 <small>Returns the last item in an fQuery collection</small>
 ```f#
 	let lastParagraph = f(String "p") |> last
