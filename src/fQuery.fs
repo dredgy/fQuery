@@ -16,9 +16,9 @@ type fQuery = HTMLElement[]
 
 type selector =
     | String of string
-    | Element of Element
+    | Element of HTMLElement
     | Document of Document
-    static member inline From(e: Element) = Element e
+    static member inline From(e: HTMLElement) = Element e
     static member inline From(s: string) = String s
     static member inline From(d: Document) = Document d
 
@@ -73,6 +73,8 @@ let closest (selector: string) (fquery: fQuery) : fQuery =
         |> Array.filter (fun elem -> elem.IsSome)
         |> Array.map (fun elem -> (Option.get elem) :?> HTMLElement)
         |> Array.distinct
+
+let parent (fquery: fQuery) : fQuery = fquery|> Array.map (fun elem -> elem.parentElement)
 
 let private getEventStringAlias event =
     match event with
