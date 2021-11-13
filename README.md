@@ -156,15 +156,15 @@ f (String "body")
 
 ```f#
     let paragraphs = f(%"p")
-                |> css "color" "blue"
-                |> css "width" "200px"
-                |> css "height" "200px"
-                |> last //Changes from here will only apply to the last paragraph
-                |> css "color" "red"
-                |> attr "id" "woot"
-                |> on "click" "" (fun e -> console.log "Hi" )
-                |> addClass "testClass"
-                |> removeClass "my-button"
+            |> css "color" "blue"
+            |> css "width" "200px"
+            |> css "height" "200px"
+            |> last //Changes from here will only apply to the last paragraph
+            |> css "color" "red"
+            |> attr "id" "woot"
+            |> on "click" "" (fun e -> console.log "Hi" )
+            |> addClass "testClass"
+            |> removeClass "my-button"
 ```				
 
 
