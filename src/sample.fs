@@ -15,7 +15,7 @@ let docReady e =
                 |> addClass "testClass"
                 |> removeClass "my-button"
 
-    console.log p
+    console.log button
 
 let bodyClicked _ = console.log "Body Clicked"
 

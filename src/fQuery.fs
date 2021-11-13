@@ -6,14 +6,12 @@ open Fable.Core
 open Browser.Dom
 open Browser.CssExtensions
 
-
 let inline (~%) (x: ^A) : ^B = (^B : (static member From: ^A -> ^B) x)
-let console = console
+
 let array list = JS.Constructors.Array.from list
 
 type fQuery =
     | Elements of HTMLElement[]
-    | Doc of Document
 
 type selector =
     | String of string
@@ -23,7 +21,7 @@ type selector =
     static member inline From(s: string) = String s
     static member inline From(d: Document) = D d
 
-let f (selector: selector) : fQuery =
+let rec f (selector: selector) : fQuery =
     match selector with
     | String s -> document.querySelectorAll s
                     |> JS.Constructors.Array.from
@@ -38,40 +36,35 @@ let f (selector: selector) : fQuery =
                 elementList
                     |> JS.Constructors.Array.from
                     |> Elements
-    | D document -> Doc document
+    | D _ ->
+            f(%"html")
 
-let private applyUnitFunction (elementFunc: HTMLElement -> unit) (docFunc: Document -> unit) fquery =
+let private applyUnitFunction (elementFunc: HTMLElement -> unit) fquery =
     match fquery with
         | Elements elements ->
             elements
                 |> Array.iter elementFunc
-        | Doc doc -> docFunc doc
     fquery
 
 let get fquery=
     match fquery with
         | Elements e -> e
-        | Doc doc -> [doc :?> HTMLElement] |> array
 
 let css (property: string) (value: string) fquery =
-    let documentFunc = fun _ -> ()
     let elementFunc = fun (elem: HTMLElement) -> elem.style.setProperty(property, value)
-    applyUnitFunction elementFunc documentFunc fquery
+    applyUnitFunction elementFunc fquery
 
 let attr (attribute: string) (value: string) fquery =
-    let documentFunc = fun _ -> ()
     let elementFunc = fun (elem: HTMLElement) -> elem.setAttribute(attribute, value)
-    applyUnitFunction elementFunc documentFunc fquery
+    applyUnitFunction elementFunc fquery
 
 let text (value: string) fquery =
-    let documentFunc = fun _ -> ()
     let elementFunc = fun (element: HTMLElement) -> element.innerText <- value
-    applyUnitFunction elementFunc documentFunc fquery
+    applyUnitFunction elementFunc fquery
 
 let html (value: string) fquery =
-    let documentFunc = fun _ -> ()
     let elementFunc = fun (element: HTMLElement) -> element.innerHTML <- value
-    applyUnitFunction elementFunc documentFunc fquery
+    applyUnitFunction elementFunc fquery
 
 let private getEventStringAlias event =
     match event with
@@ -92,6 +85,8 @@ let on (event: string) (selector: string) (callback: Event -> unit) fquery =
     elements |> Array.iter (
         fun elem ->
             if selector = "" then
+                if event = "ready" then
+                    document.addEventListener(eventString, callback)
                 elem.addEventListener(eventString, callback)
             else
                 elem.addEventListener(eventString,  fun e -> eventOnTarget e selector callback )
@@ -101,19 +96,16 @@ let on (event: string) (selector: string) (callback: Event -> unit) fquery =
 (* Class Functions *)
 
 let addClass (className: string) fquery =
-    let docFunc = fun _ -> ()
     let elementFunc = fun (elem: HTMLElement) -> elem.classList.add className
-    applyUnitFunction elementFunc docFunc fquery
+    applyUnitFunction elementFunc fquery
 
 let removeClass (className: string) fquery =
-    let docFunc = fun _ -> ()
     let elementFunc = fun (elem: HTMLElement) -> elem.classList.remove className
-    applyUnitFunction elementFunc docFunc fquery
+    applyUnitFunction elementFunc fquery
 
 let toggleClass (className: string) fquery =
-    let docFunc = fun _ -> ()
     let elementFunc = fun (elem: HTMLElement) -> elem.classList.toggle className |> ignore
-    applyUnitFunction elementFunc docFunc fquery
+    applyUnitFunction elementFunc fquery
 
 let first fquery =
     match fquery with
@@ -121,7 +113,6 @@ let first fquery =
             [elements.[0]]
                 |> array
                 |> Elements
-        | _ -> fquery
 
 let last fquery =
     match fquery with
@@ -129,4 +120,3 @@ let last fquery =
             [elements.[elements.Length - 1]]
                 |> array
                 |> Elements
-        | _ -> fquery
