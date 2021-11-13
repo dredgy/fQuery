@@ -181,7 +181,7 @@ Starting from the selected elements, finds all descendants that match the given 
 
 ```f#
 f(%"div")
-	|> find "span.selected"
+    |> find "span.selected"
 ```
 
 >#### closest (selector: string)
@@ -191,7 +191,7 @@ Starting from the selected elements, traverses upwards to find the first ancesto
 
 ```f#
 f(%"span.selected")
-	|> closest "div"
+    |> closest "div"
 ```	
 
 >#### parent (selector: string)
@@ -202,5 +202,5 @@ If a selector is passed in, then if the parent does not match that selector it w
 </small>
 
 ```f#
-f(%"span.selected")|> parent
+f(%"span.selected")|> parent ""
 ```	
