@@ -45,27 +45,35 @@ let f (selector: selector) : fQuery =
                     |> Elements
     | D document -> Doc document
 
+let private applyUnitFunction (elementFunc: HTMLElement -> unit) (docFunc: Document -> unit) fquery =
+    match fquery with
+        | Elements elements ->
+            elements
+                |> Array.iter elementFunc
+        | Doc doc -> docFunc doc
+    fquery
+
 let get fquery=
     match fquery with
         | Elements e -> e
         | Doc doc -> [doc :?> HTMLElement] |> array
 
 let css (property: string) (value: string) fquery =
-    match fquery with
-    | Elements elements ->
-        elements |> Array.iter (fun elem -> elem.style.setProperty(property, value))
-        fquery
-    | Doc _ -> fquery
-
+    let documentFunc = fun _ -> ()
+    let elementFunc = fun (elem: HTMLElement) -> elem.style.setProperty(property, value)
+    applyUnitFunction elementFunc documentFunc fquery
 
 let attr (attribute: string) (value: string) fquery =
-    match fquery with
-    | Elements elements ->
-        elements |> Array.iter (fun elem -> elem.setAttribute(attribute, value))
-        fquery
-    | Doc _ -> fquery
+    let documentFunc = fun _ -> ()
+    let elementFunc = fun (elem: HTMLElement) -> elem.setAttribute(attribute, value)
+    applyUnitFunction elementFunc documentFunc fquery
 
-let getEventStringAlias event =
+let text (value: string) fquery =
+    let documentFunc = fun _ -> ()
+    let elementFunc = fun (element: HTMLElement) -> element.innerText <- value
+    applyUnitFunction elementFunc documentFunc fquery
+
+let private getEventStringAlias event =
     match event with
     | "ready" -> "DOMContentLoaded"
     | _ -> event
@@ -94,28 +102,19 @@ let on (event: string) (selector: string) (callback: Event -> unit) fquery =
 (* Class Functions *)
 
 let addClass (className: string) fquery =
-    match fquery with
-        | Elements elements ->
-            elements
-                |> Array.iter (fun elem -> elem.classList.add className)
-            fquery
-        | _ -> fquery
+    let docFunc = fun _ -> ()
+    let elementFunc = fun (elem: HTMLElement) -> elem.classList.add className
+    applyUnitFunction elementFunc docFunc fquery
 
 let removeClass (className: string) fquery =
-    match fquery with
-        | Elements elements ->
-            elements
-                |> Array.iter (fun elem -> elem.classList.remove className)
-            fquery
-        | _ -> fquery
+    let docFunc = fun _ -> ()
+    let elementFunc = fun (elem: HTMLElement) -> elem.classList.remove className
+    applyUnitFunction elementFunc docFunc fquery
 
 let toggleClass (className: string) fquery =
-    match fquery with
-        | Elements elements ->
-            elements
-                |> Array.iter (fun elem -> elem.classList.toggle className |> ignore)
-            fquery
-        | _ -> fquery
+    let docFunc = fun _ -> ()
+    let elementFunc = fun (elem: HTMLElement) -> elem.classList.toggle className |> ignore
+    applyUnitFunction elementFunc docFunc fquery
 
 let first fquery =
     match fquery with
