@@ -145,7 +145,7 @@ f (String "body")
     |> on "click" "button" (fun _ -> console.log("Just a button")) //Only fires if a button is clicked
 ```
 
-> #### Not Implement yet
+> #### Not Implemented yet
 <b>off()</b> is a little harder to implement than I thought. I will have to see how jQuery handles it because the implementation I have is quite buggy.
 
 
