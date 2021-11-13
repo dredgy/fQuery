@@ -35,7 +35,7 @@
 
 ```f#
 (* Returns all divs with the class "className" and the id "id". *)
-f(%'div.className#id')
+f(%"div.className#id")
 ```
 
 <p>`f()` can take either a String, an Element or the document itself.</p>
@@ -197,3 +197,11 @@ f(%"span.selected")
 	|> closest "div"
 ```	
 
+>#### parent (selector: string)
+<small>
+Selects the direct parent of the selected element
+</small>
+
+```f#
+f(%"span.selected")|> parent
+```	
