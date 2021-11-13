@@ -3,7 +3,7 @@ open fQuery
 open Browser
 open Browser.Types
 
-let docReady (_) =
+let docReady e =
 
     let p = f(String "p")
                 |> last
@@ -18,7 +18,7 @@ let docReady (_) =
     console.log p
 
 
-f (D document)
+f(D document)
     |> on "ready" "" docReady
     |> on "click" "button" (fun _ -> console.log("Lol"))
     |> ignore

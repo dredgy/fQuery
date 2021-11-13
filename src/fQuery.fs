@@ -87,6 +87,18 @@ let on (event: string) (selector: string) (callback: Event -> unit) fquery =
 
     fquery
 
+let off (event: string) (selector: string) (callback: Event -> unit) fquery =
+    let eventString = getEventStringAlias event
+    match fquery with
+    | Elements elements ->
+        if selector <> "" then
+            elements |> Array.iter (fun elem ->
+                elem.removeEventListener(eventString, callback)
+            )
+    | Doc doc ->
+        if selector <> "" then
+            doc.removeEventListener(eventString, callback)
+
 (* Class Functions *)
 
 let addClass (className: string) fquery =

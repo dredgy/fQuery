@@ -19,6 +19,7 @@
 <p>
 	<b>It is <b>NOT</b> intended to provide browser compatible in the way that jQuery originally was. 
 	I might also update some jQuery functionality to make it more consistent with modern Javascript standards.
+	There will be no implementation of deprecrated jQuery functions like <b>.click()</b>
 </p>
 
 
@@ -116,3 +117,47 @@ but will likely implement separate <b>addClasses</b> and <b>removeClasses</b> fu
 ```f#
 	let lastParagraph = f(String "p") |> last
 ```	
+
+### Event Handlers ###
+<p>
+	I love the way jQuery handles event handlers, and fQuery replicates that to the best of it's ability, providing 
+	near-identical syntax.
+</p>
+<p>
+	jQuery has an overloaded definition for it's event functions, fQuery does not. It uses a single function with 3 parameters. 
+	You can leave the 2nd parameter as an empty string if you don't need it, the I would recommend attaching all events to the body/document
+	and using the second parameter.
+</p>	
+
+> #### on (eventName: string) (selector: string or "") (callback: function Event -> unit)
+<small>
+Attaches an event to the selected elements. The second argument is a query selector. 
+If it is left as an empty string, the event will be attached directly to selected element. 
+If a selector is specified, the event will only be fired if an element matching the selector is the event target. 
+</small>
+
+```f#
+let docReady e = console.log e
+f (D document) |> on "ready" "" docReady //fires when the document is ready
+
+f (String "body")
+    |> on "click" "" (fun _ -> console.log("Body clicked")) //Fires whenever the body is clicked
+    |> on "click" "button" (fun _ -> console.log("Just a button")) //Only fires if a button is clicked
+```
+
+> #### off (eventName: string) (selector: string or "") (callback: function Event -> unit)
+<small>
+Removes an event handler from selected items. Identical syntax to <b>on</b>
+</small>
+
+```f#
+f (String "body")
+    |> off "click" "" (fun _ -> console.log("Body clicked"))
+    |> off "click" "button" (fun _ -> console.log("Just a button")) 
+```
+
+
+
+
+	
+
