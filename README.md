@@ -58,19 +58,19 @@ let buttons = f(String "button")
 > #### addClass (className: string)
 <small>Adds a class to the selected elements</small>
 ```f#
-	let links = f(String "a[href]") |> addClass "active"
+let links = f(String "a[href]") |> addClass "active"
 ```
 
 > #### removeClass (className: string)
 <small>Removes a class from the selected elements</small>
 ```f#
-	let links = f(String "a[href]") |> removeClass "active"
+let links = f(String "a[href]") |> removeClass "active"
 ```
 	
 > #### toggleClass (className: string)
 <small>If an element already has a class, remove it. Else add it.</small>
 ```f#
-	let links = f(String "a[href]") |> toggleClass "active"
+let links = f(String "a[href]") |> toggleClass "active"
 ```
 
 > #### Not yet implemented
@@ -86,8 +86,8 @@ but will likely implement separate <b>addClasses</b> and <b>removeClasses</b> fu
 <small>Sets an attribute on selected elements.</small>
 
 ```f#
-	let links = f(String "a[href]") 
-			|> attr "href" "https://github.com"
+let links = f(String "a[href]") 
+		|> attr "href" "https://github.com"
 ```
 
 
@@ -95,9 +95,9 @@ but will likely implement separate <b>addClasses</b> and <b>removeClasses</b> fu
 <small>Sets a CSS property of the selected elements</small>
 
 ```f#
-	let links = f(String "a[href]") 
-			|> css "color" "red"
-			|> css "background-color" "blue"
+let links = f(String "a[href]") 
+		|> css "color" "red"
+		|> css "background-color" "blue"
 ```
 
 > #### Not yet implemented
@@ -109,13 +109,13 @@ but will likely implement separate <b>addClasses</b> and <b>removeClasses</b> fu
 <small>Returns the first item in an fQuery collections</small>
 
 ```f#
-	let firstParagraph = f(String "p") |> first
+let firstParagraph = f(String "p") |> first
 ```	
 
 > #### last
 <small>Returns the last item in an fQuery collection</small>
 ```f#
-	let lastParagraph = f(String "p") |> last
+let lastParagraph = f(String "p") |> last
 ```	
 
 ### Event Handlers ###
