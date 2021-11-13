@@ -30,8 +30,8 @@
 
 ### Selecting Elements.
 
-<p>In jQuery, you use the `$` function to select elements. E.g `$('div.className#id')`.</p>
-<p>In fQuery, it's essentially identical, but you use the `f` function.
+<p>In jQuery, you use the <b>$</b> function to select elements. E.g <b>$('div.className#id')</b>.</p>
+<p>In fQuery, it's essentially identical, but you use the <b>f</b> function.
 
 ```f#
 (* Returns all divs with the class "className" and the id "id". *)
@@ -41,12 +41,12 @@ f(%'div.className#id')
 <p>`f()` can take either a String, an Element or the document itself.</p>
 
 ```f#
-let fQueryDocument = f(D document)
+let fQueryDocument = f(%document)
 
 let button = document.querySelector "button"
-let fqueryButton = f(Element buttons)
+let fqueryButton = f(%buttons)
 
-let buttons = f(String "button")
+let buttons = f(%"button")
 ```
 
 <p>Are all perfectly valid and will return an fQuery type which can be passed to other fQuery functions.</p>
@@ -167,6 +167,20 @@ f (String "body")
             |> removeClass "my-button"
 ```				
 
+### Utility Functions
+	
+> #### get
+<small>
+	Returns a raw F# collection of HTMLElements, as opposed to an fQuery collection.
+	You cannot call any more fQuery functions on the result. Useful if you need to perform native Javascript
+	functions that aren't implemented in jQuery/fQuery.
+</small>	
+	
+```f#
+let divs = f(%"div") |> get 
+div.[0].scrollIntoView()	
+```
+	
 
 
 	

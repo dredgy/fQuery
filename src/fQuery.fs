@@ -132,3 +132,7 @@ let last fquery =
                 |> Elements
         | _ -> fquery
 
+let get fquery=
+    match fquery with
+        | Elements e -> e
+        | Doc doc -> [doc :?> HTMLElement] |> array
