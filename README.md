@@ -19,7 +19,7 @@
 <p>
 	It is <b>NOT</b> intended to provide browser compatiblity in the way that jQuery originally was. 
 	I might also update some jQuery functionality to make it more consistent with modern Javascript standards.
-	There will be no implementation of deprecrated jQuery functions like <b>.click()</b>
+	There will be no implementation of deprecrated jQuery functions like <b>.click()</b>.
 </p>
 
 
@@ -49,7 +49,31 @@ let fqueryButton = f(%buttons)
 let buttons = f(%"button")
 ```
 
+<p>
+At this stage, f() returns a collection of HTMLElements. Originally it returned a special union type of "fQuery". Currently the fquery type is just defined as HTMLElement[]
+since the item could be either a collection of elements or a Document. For now, I have a workaround but not sure if it will hold when things get more complex.
+</p>
+
 <p>Are all perfectly valid and will return an fQuery type which can be passed to other fQuery functions.</p>
+
+
+### Chaining with Pipes
+
+<p>Pipes are the whole point of F# right?</p>
+<p>All fQuery functions currently implemented both take and return a value of type fQuery (an alias of HTMLElement[]). So you can chain them infinitely</p>
+
+```f#
+    let paragraphs = f(%"p")
+            |> css "color" "blue"
+            |> css "width" "200px"
+            |> css "height" "200px"
+            |> last //Changes from here will only apply to the last paragraph
+            |> css "color" "red"
+            |> attr "id" "woot"
+            |> on "click" "" (fun e -> console.log "Hi" )
+            |> addClass "testClass"
+            |> removeClass "my-button"
+```				
 
 ### Adding and Removing Classes
 <p>Just like you would in jQuery (that will be a recurring theme), except functions are called with pipe operators rather than on an object.</p>
@@ -131,8 +155,9 @@ let lastParagraph = f(%"p") |> last
 
 > #### on (eventName: string) (selector: string or "") (callback: function Event -> unit)
 <small>
-Attaches an event to the selected elements. The second argument is a query selector. 
-If it is left as an empty string, the event will be attached directly to selected element. 
+Attaches an event to the selected elements.
+The first argument is the name of the event. It can also be a comma separated list of events. 
+The second argument is a query selector.  If it is left as an empty string, the event will be attached directly to selected element. 
 If a selector is specified, the event will only be fired if an element matching the selector is the event target. 
 </small>
 
@@ -142,46 +167,33 @@ f (%document) |> on "ready" "" docReady //fires when the document is ready
 
 f (String "body")
     |> on "click" "" (fun _ -> console.log("Body clicked")) //Fires whenever the body is clicked
-    |> on "click" "button" (fun _ -> console.log("Just a button")) //Only fires if a button is clicked
+    |> on "click, mouseover" "button" (fun _ -> console.log("Just a button")) //Only fires if a button is clicked (or hovered over)
 ```
 
 > #### Not Implemented yet
 <b>off()</b> is a little harder to implement than I thought. I will have to see how jQuery handles it because the implementation I have is quite buggy.
 
 
-### Chaining with Pipes
+### Dom Traversal Functions
+<p>Lots to implement here, jQuery can do alot with the Dom!</p>
 
-<p>Pipes are the whole point of F# right?</p>
-<p>All fQuery functions currently implemented both take and return a value of type fQuery. So you can chain them infinitely</p>
-
-```f#
-    let paragraphs = f(%"p")
-            |> css "color" "blue"
-            |> css "width" "200px"
-            |> css "height" "200px"
-            |> last //Changes from here will only apply to the last paragraph
-            |> css "color" "red"
-            |> attr "id" "woot"
-            |> on "click" "" (fun e -> console.log "Hi" )
-            |> addClass "testClass"
-            |> removeClass "my-button"
-```				
-
-### Utility Functions
-	
-> #### get
+>#### find (selector: string)
 <small>
-	Returns a raw F# collection of HTMLElements, as opposed to an fQuery collection.
-	You cannot call any more fQuery functions on the result. Useful if you need to perform native Javascript
-	functions that aren't implemented in jQuery/fQuery.
-</small>	
-	
+Starting from the selected elements, finds all descendants that match the given selector.
+</small>
+
 ```f#
-let divs = f(%"div") |> get 
-div.[0].scrollIntoView()	
+f(%"div")
+	|> find "span.selected"
 ```
-	
 
+>#### closest (selector: string)
+<small>
+Starting from the selected elements, traverses upwards to find the first ancestor that matches the selector.
+</small>
 
-	
+```f#
+f(%"span.selected")
+	|> closest "div"
+```	
 

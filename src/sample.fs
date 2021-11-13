@@ -7,7 +7,7 @@ let bodyClicked _ = console.log "Body Clicked"
 
 let docReady e =
     let x =
-        f(%"span.select")
+        f(%"span.selected")
             |> closest "div"
             |> css "background-color" "red"
             |> on "mouseover,click" "" bodyClicked
