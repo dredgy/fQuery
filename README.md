@@ -154,7 +154,7 @@ f (String "body")
 <p>Pipes are the whole point of F# right?</p>
 <p>All fQuery functions currently implemented both take and return a value of type fQuery. So you can chain them infinitely</p>
 
-```
+```f#
     let paragraphs = f(%"p")
                 |> css "color" "blue"
                 |> css "width" "200px"
