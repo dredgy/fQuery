@@ -17,7 +17,7 @@
 </p>
 
 <p>
-	It is <b>NOT</b> intended to provide browser compatible in the way that jQuery originally was. 
+	It is <b>NOT</b> intended to provide browser compatiblity in the way that jQuery originally was. 
 	I might also update some jQuery functionality to make it more consistent with modern Javascript standards.
 	There will be no implementation of deprecrated jQuery functions like <b>.click()</b>
 </p>
