@@ -45,6 +45,11 @@ let f (selector: selector) : fQuery =
                     |> Elements
     | D document -> Doc document
 
+let get fquery=
+    match fquery with
+        | Elements e -> e
+        | Doc doc -> [doc :?> HTMLElement] |> array
+
 let css (property: string) (value: string) fquery =
     match fquery with
     | Elements elements ->
@@ -74,20 +79,16 @@ let eventOnTarget (e: Event) (selector: string) (callback: Event->unit) =
 (* Event Handling Function *)
 let on (event: string) (selector: string) (callback: Event -> unit) fquery =
     let eventString = getEventStringAlias event
-    match fquery with
-    | Elements elements ->
-        elements |> Array.iter (fun elem ->
+
+    let elements = get fquery
+
+    elements |> Array.iter (
+        fun elem ->
             if selector = "" then
                 elem.addEventListener(eventString, callback)
             else
                 elem.addEventListener(eventString,  fun e -> eventOnTarget e selector callback )
-        )
-    | Doc doc ->
-        if selector = "" then
-            doc.addEventListener(eventString, callback)
-        else
-            doc.addEventListener(eventString,  fun e -> eventOnTarget e selector callback )
-
+       )
     fquery
 
 (* Class Functions *)
@@ -131,8 +132,3 @@ let last fquery =
                 |> array
                 |> Elements
         | _ -> fquery
-
-let get fquery=
-    match fquery with
-        | Elements e -> e
-        | Doc doc -> [doc :?> HTMLElement] |> array
