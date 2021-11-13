@@ -69,6 +69,7 @@ let eventOnTarget (e: Event) (selector: string) (callback: Event->unit) =
     if(target.matches(selector)) then
         callback e
 
+(* Event Handling Function *)
 let on (event: string) (selector: string) (callback: Event -> unit) fquery =
     let eventString = getEventStringAlias event
     match fquery with
@@ -91,13 +92,17 @@ let off (event: string) (selector: string) (callback: Event -> unit) fquery =
     let eventString = getEventStringAlias event
     match fquery with
     | Elements elements ->
-        if selector <> "" then
-            elements |> Array.iter (fun elem ->
+        elements |> Array.iter (fun elem ->
+            if selector <> "" then
                 elem.removeEventListener(eventString, callback)
-            )
+            else
+                elem.removeEventListener(eventString,  fun e -> eventOnTarget e selector callback )
+        )
     | Doc doc ->
         if selector <> "" then
             doc.removeEventListener(eventString, callback)
+        else doc.removeEventListener(eventString,  fun e -> eventOnTarget e selector callback )
+
 
 (* Class Functions *)
 

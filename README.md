@@ -34,7 +34,7 @@
 <p>In fQuery, it's essentially identical, but you use the `f` function.
 
 ```f#
-(* Returns all dives with the class "className" and the id "id". *)
+(* Returns all divs with the class "className" and the id "id". *)
 f(String 'div.className#id')
 ```
 
@@ -106,7 +106,7 @@ let links = f(String "a[href]")
 ### Plucking from the fQuery collection
 
 > #### first
-<small>Returns the first item in an fQuery collections</small>
+<small>Returns the first item in an fQuery collection</small>
 
 ```f#
 let firstParagraph = f(String "p") |> first
