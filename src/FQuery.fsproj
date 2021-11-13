@@ -5,9 +5,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="fQuery.fs" />
+    <Compile Include="sample.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Fable.Browser.Dom" Version="2.2.0" />
-    <PackageReference Include="Fable.Core" Version="3.2.3" />
+    <PackageReference Include="Fable.Browser.Css" Version="2.1.0" />
+    <PackageReference Include="Fable.Browser.Dom" Version="2.6.0" />
+    <PackageReference Include="Fable.Core" Version="3.4.0" />
   </ItemGroup>
 </Project>
