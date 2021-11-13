@@ -1,14 +1,16 @@
 module fQuery
 
 
+open System
 open Browser.Types
 open Fable.Core
 open Browser.Dom
 open Browser.CssExtensions
+open Fable.Core.JsInterop
 
 let inline (~%) (x: ^A) : ^B = (^B : (static member From: ^A -> ^B) x)
 
-let array list = JS.Constructors.Array.from list
+let array (list: NodeList) : HTMLElement[] = JS.Constructors.Array.from list
 
 type fQuery = HTMLElement[]
 
@@ -22,18 +24,18 @@ type selector =
 
 let rec f (selector: selector) : fQuery =
     match selector with
-    | String s -> document.querySelectorAll s
-                    |> JS.Constructors.Array.from
+    | String s -> document.querySelectorAll s |> array
     | Element element ->
         match element with
-            | null -> array []
+            | null -> [] |> JS.Constructors.Array.from
             | _ ->
                 element.setAttribute ("fquery", "include")
                 let elementList = document.querySelectorAll "[fquery=include]"
                 element.removeAttribute "fquery"
-                JS.Constructors.Array.from elementList
+                array elementList
     | Document _ ->
             f(%"html")
+
 
 let private applyFunctionToAllElements (elementFunc: HTMLElement -> unit) (fquery: fQuery) =
     fquery
@@ -58,6 +60,20 @@ let html (value: string) fquery =
     let elementFunc = fun (element: HTMLElement) -> element.innerHTML <- value
     applyFunctionToAllElements elementFunc fquery
 
+(* Dom Traversal *)
+let find (selector: string) (fquery: fQuery) : fQuery =
+    fquery
+        |> Array.map (fun elem -> elem.querySelectorAll selector |> array)
+        |> Array.concat
+        |> Array.distinct
+
+let closest (selector: string) (fquery: fQuery) : fQuery =
+    fquery
+        |> Array.map (fun elem -> elem.closest selector)
+        |> Array.filter (fun elem -> elem.IsSome)
+        |> Array.map (fun elem -> (Option.get elem) :?> HTMLElement)
+        |> Array.distinct
+
 let private getEventStringAlias event =
     match event with
     | "ready" -> "DOMContentLoaded"
@@ -71,9 +87,11 @@ let private eventOnTarget (e: Event) (selector: string) (callback: Event->unit) 
 
 (* Event Handling Function *)
 let on (event: string) (selector: string) (callback: Event -> unit) fquery =
-    let eventString = getEventStringAlias event
-    let elements = get fquery
+    let events = event.Split ','
 
+    events |> Array.iter (fun event ->
+    let eventString = getEventStringAlias (event.Trim())
+    let elements = get fquery
     elements |> Array.iter (
         fun elem ->
             if selector = "" then
@@ -83,6 +101,7 @@ let on (event: string) (selector: string) (callback: Event -> unit) fquery =
             else
                 elem.addEventListener(eventString,  fun e -> eventOnTarget e selector callback )
        )
+    )
     fquery
 
 (* Class Functions *)
@@ -99,9 +118,6 @@ let toggleClass (className: string) fquery =
     let elementFunc = fun (elem: HTMLElement) -> elem.classList.toggle className |> ignore
     applyFunctionToAllElements elementFunc fquery
 
-let first (fquery: fQuery) =
-    [fquery.[0]] |> array
+let first (fquery: fQuery) : fQuery = [fquery.[0]] |> JS.Constructors.Array.from
 
-let last (fquery: fQuery) =
-    [fquery.[fquery.Length - 1]]
-        |> array
+let last (fquery: fQuery) : fQuery = [fquery.[fquery.Length - 1]] |> JS.Constructors.Array.from
