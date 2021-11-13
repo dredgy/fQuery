@@ -18,12 +18,12 @@ let array list = JS.Constructors.Array.from list
 
 type fQuery =
     | Elements of HTMLElement[]
-    | Document of Document
+    | Doc of Document
 
 type selector =
     | String of string
     | Element of Element
-    | Doc of Document
+    | Document of Document
 
 let f (selector: selector) : fQuery =
     match selector with
@@ -40,7 +40,7 @@ let f (selector: selector) : fQuery =
                 elementList
                     |> JS.Constructors.Array.from
                     |> Elements
-    | Doc document -> Document document
+    | Document document -> Doc document
 
 
 let css (property: string) (value: string) fquery =
@@ -48,7 +48,7 @@ let css (property: string) (value: string) fquery =
     | Elements elements ->
         elements |> Array.iter (fun elem -> elem.style.setProperty(property, value))
         fquery
-    | Document _ -> fquery
+    | Doc _ -> fquery
 
 
 let attr (attribute: string) (value: string) fquery =
@@ -56,7 +56,7 @@ let attr (attribute: string) (value: string) fquery =
     | Elements elements ->
         elements |> Array.iter (fun elem -> elem.setAttribute(attribute, value))
         fquery
-    | Document _ -> fquery
+    | Doc _ -> fquery
 
 let getEventStringAlias event =
     match event with
@@ -79,7 +79,7 @@ let on (event: string) (selector: string) (callback: Event -> unit) fquery =
             else
                 elem.addEventListener(eventString,  fun e -> eventOnTarget e selector callback )
         )
-    | Document doc ->
+    | Doc doc ->
         if selector = "" then
             doc.addEventListener(eventString, callback)
         else
