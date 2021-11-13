@@ -12,7 +12,7 @@ open Browser.Blob
 open Browser.Event
 open Browser.DomExtensions
 
-
+let inline (~%) (x: ^A) : ^B = (^B : (static member From: ^A -> ^B) x)
 let console = console
 let array list = JS.Constructors.Array.from list
 
@@ -24,6 +24,9 @@ type selector =
     | String of string
     | Element of Element
     | D of Document
+    static member inline From(e: Element) = Element e
+    static member inline From(s: string) = String s
+    static member inline From(d: Document) = D d
 
 let f (selector: selector) : fQuery =
     match selector with
@@ -41,7 +44,6 @@ let f (selector: selector) : fQuery =
                     |> JS.Constructors.Array.from
                     |> Elements
     | D document -> Doc document
-
 
 let css (property: string) (value: string) fquery =
     match fquery with
@@ -87,22 +89,6 @@ let on (event: string) (selector: string) (callback: Event -> unit) fquery =
             doc.addEventListener(eventString,  fun e -> eventOnTarget e selector callback )
 
     fquery
-
-let off (event: string) (selector: string) (callback: Event -> unit) fquery =
-    let eventString = getEventStringAlias event
-    match fquery with
-    | Elements elements ->
-        elements |> Array.iter (fun elem ->
-            if selector <> "" then
-                elem.removeEventListener(eventString, callback)
-            else
-                elem.removeEventListener(eventString,  fun e -> eventOnTarget e selector callback )
-        )
-    | Doc doc ->
-        if selector <> "" then
-            doc.removeEventListener(eventString, callback)
-        else doc.removeEventListener(eventString,  fun e -> eventOnTarget e selector callback )
-
 
 (* Class Functions *)
 

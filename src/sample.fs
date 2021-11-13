@@ -3,9 +3,9 @@ open fQuery
 open Browser
 open Browser.Types
 
-let docReady e =
 
-    let p = f(String "p")
+let docReady e =
+    let p = f(%"p")
                 |> last
                 |> css "color" "blue"
                 |> css "width" "200px"
@@ -17,8 +17,9 @@ let docReady e =
 
     console.log p
 
+let buttonClicked _ = console.log "Hi"
 
-f(D document)
+f(%document)
     |> on "ready" "" docReady
-    |> on "click" "button" (fun _ -> console.log("Lol"))
+    |> on "click" "button" buttonClicked
     |> ignore
