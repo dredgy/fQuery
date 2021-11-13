@@ -146,7 +146,7 @@ let lastParagraph = f(%"p") |> last
 </p>
 <p>
 	jQuery has an overloaded definition for it's event functions, fQuery does not. It uses a single function with 3 parameters. 
-	You can leave the 2nd parameter as an empty string if you don't need it, the I would recommend attaching all events to the body/document
+	You can leave the 2nd parameter as an empty string if you don't need it, though I would recommend attaching all events to the body/document
 	and using the second parameter.
 </p>	
 
