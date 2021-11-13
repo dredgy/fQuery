@@ -32,14 +32,14 @@
 <p>In jQuery, you use the `$` function to select elements. E.g `$('div.className#id')`.</p>
 <p>In fQuery, it's essentially identical, but you use the `f` function.
 
-```
+```f#
 (* Returns all dives with the class "className" and the id "id". *)
 f(String 'div.className#id')
 ```
 
 <p>`f()` can take either a String, an Element or the document itself.</p>
 
-```
+```f#
 let fQueryDocument = f(D document)
 
 let buttons = document.querySelector "button"
@@ -56,19 +56,19 @@ let buttons = f(String "button")
 
 #### addClass (className: string)
 <small>Adds a class to the selected elements</small>
-```
+```f#
 	let links = f(String "a[href]") |> addClass "active"
 ```
 
 #### removeClass (className: string)
 <small>Removes a class to the selected elements</small>
-```
+```f#
 	let links = f(String "a[href]") |> removeClass "active"
 ```
 	
 #### toggleClass (className: string)
 <small>If an element already has a class, remove it. Else add it.</small>
-```
+```f#
 	let links = f(String "a[href]") |> toggleClass "active"
 ```
 
@@ -86,20 +86,33 @@ but will likely implement separate <b>addClasses</b> and <b>removeClasses</b> fu
 
 ```f#
 	let links = f(String "a[href]") 
-					|> attr "href" "https://github.com"
+			|> attr "href" "https://github.com"
 ```
 
 
 #### css (property: string) (value: string)
 <small>Sets a CSS property of the selected elements</small>
 
-```
+```f#
 	let links = f(String "a[href]") 
-					|> css "color" "red"
-					|> css "background-color" "blue"
+			|> css "color" "red"
+			|> css "background-color" "blue"
 ```
 
 #### Not yet implemented
 <p>I'm probably not aware of all of jQuery's functions, <b>prop()</b> is probably the largest and most important to implement.</p>
 
+### Plucking from the fQuery collection
 
+#### first
+<small>Returns the first item in an fQuery collections</small>
+
+```f#
+	let firstParagraph = f(String "p") |> first
+```	
+
+#### last
+<small>Returns the last item in an fQuery collection</small>
+```f#
+	let lastParagraph = f(String "p") |> last
+```	
