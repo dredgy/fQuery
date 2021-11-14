@@ -6,13 +6,14 @@ open Browser.Types
 open Fable.Core
 open Browser.Dom
 open Browser.CssExtensions
-open Fable.Core.JsInterop
+open FSharp.Core
 
 let inline (~%) (x: ^A) : ^B = (^B : (static member From: ^A -> ^B) x)
 
 let array (list: NodeList) : HTMLElement[] = JS.Constructors.Array.from list
 
 type fQuery = HTMLElement[]
+
 
 type selector =
     | String of string
@@ -39,18 +40,40 @@ let rec f (selector: selector) : fQuery =
 
 let private applyFunctionToAllElements (elementFunc: HTMLElement -> unit) (fquery: fQuery) =
     fquery
-        |> Array.iter elementFunc
+        |> FSharp.Collections.Array.iter elementFunc
     fquery
 
 let get (fquery: fQuery) = fquery
+
+let first (fquery: fQuery) : fQuery =
+    if fquery.Length > 0 then
+        [fquery.[0]] |> JS.Constructors.Array.from
+    else [] |> JS.Constructors.Array.from
+
+let last (fquery: fQuery) : fQuery =
+    if fquery.Length > 0 then
+        [fquery.[fquery.Length - 1]] |> JS.Constructors.Array.from
+    else [] |> JS.Constructors.Array.from
 
 let css (property: string) (value: string) fquery =
     let elementFunc = fun (elem: HTMLElement) -> elem.style.setProperty(property, value)
     applyFunctionToAllElements elementFunc fquery
 
 let attr (attribute: string) (value: string) fquery =
-    let elementFunc = fun (elem: HTMLElement) -> elem.setAttribute(attribute, value)
-    applyFunctionToAllElements elementFunc fquery
+     let elementFunc = fun (elem: HTMLElement) -> elem.setAttribute(attribute, value)
+     applyFunctionToAllElements elementFunc fquery
+
+let getAttr (attribute: string) fquery =
+     let result =
+        fquery
+        |> first
+        |> Array.map (fun (elem: HTMLElement) ->
+            if elem.hasAttribute(attribute) then
+                elem.getAttribute(attribute)
+            else "")
+     if result.Length > 0 then result.[0]
+     else ""
+
 
 let text (value: string) fquery =
     let elementFunc = fun (element: HTMLElement) -> element.innerText <- value
@@ -58,7 +81,7 @@ let text (value: string) fquery =
 
 let getText (fquery: fQuery) =
     fquery
-        |> Array.map(fun elem -> elem.innerText)
+        |> FSharp.Collections.Array.map(fun elem -> elem.innerText)
         |> String.concat ""
 
 let html (value: string) fquery =
@@ -68,7 +91,7 @@ let HTML = html
 
 let getHtml (fquery: fQuery) =
     fquery
-        |> Array.map(fun elem -> elem.innerHTML)
+        |> FSharp.Collections.Array.map(fun elem -> elem.innerHTML)
         |> String.concat ""
 let getHTML = getHtml
 
@@ -149,6 +172,29 @@ let toggleClass (className: string) fquery =
     let elementFunc = fun (elem: HTMLElement) -> elem.classList.toggle className |> ignore
     applyFunctionToAllElements elementFunc fquery
 
-let first (fquery: fQuery) : fQuery = [fquery.[0]] |> JS.Constructors.Array.from
 
-let last (fquery: fQuery) : fQuery = [fquery.[fquery.Length - 1]] |> JS.Constructors.Array.from
+
+(* Data *)
+type dataStorage() =
+    let _storage = JS.Constructors.WeakMap.Create()
+
+    member this.saveData (element: HTMLElement) (key: string) (value: 'a) =
+        let boxedValue = box value
+        if _storage.has(element) then
+          _storage.delete(element) |> ignore
+        _storage.set(element, Map.empty.Add(key, boxedValue)) |> ignore
+
+    member this.getData (element: HTMLElement) (key: String) = _storage.get(element)
+
+let storedData = dataStorage()
+
+let data (key: string) (value: 'a) (fquery: fQuery) =
+    fquery |> Array.iter(
+        fun elem ->
+            storedData.saveData elem key value
+    )
+    fquery
+
+let getData<'a> key (fquery: fQuery): 'a =
+    let data = fquery |> Array.map(fun elem -> storedData.getData elem key)
+    unbox data.[0].[key]
