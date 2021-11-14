@@ -56,9 +56,21 @@ let text (value: string) fquery =
     let elementFunc = fun (element: HTMLElement) -> element.innerText <- value
     applyFunctionToAllElements elementFunc fquery
 
+let getText (fquery: fQuery) =
+    fquery
+        |> Array.map(fun elem -> elem.innerText)
+        |> String.concat ""
+
 let html (value: string) fquery =
     let elementFunc = fun (element: HTMLElement) -> element.innerHTML <- value
     applyFunctionToAllElements elementFunc fquery
+let HTML = html
+
+let getHtml (fquery: fQuery) =
+    fquery
+        |> Array.map(fun elem -> elem.innerHTML)
+        |> String.concat ""
+let getHTML = getHtml
 
 (* Dom Traversal *)
 let find (selector: string) (fquery: fQuery) : fQuery =

@@ -7,10 +7,8 @@ let bodyClicked _ = console.log "Body Clicked"
 
 let docReady e =
     let x =
-        f(%"p.select")
-            |> parent "#test"
-            |> css "background-color" "red"
-            |> on "mouseover,click" "" bodyClicked
+        f(%"div")
+            |> getHtml
 
     console.log x
     ()

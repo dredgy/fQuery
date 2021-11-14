@@ -7,17 +7,17 @@
 </p>
 
 <p>
-	fQuery is a clone of jQuery, written in F#, and built for F# client-side apps using Fable. 
+	fQuery is a clone of jQuery, written in F#, and built for F# client-side apps using Fable.
 </p>
 
 ## Goals
 <p>
-	fQuery takes a functional first approach to jQuery, with the eventual aim of implementing all functions that are in jQuery. 
+	fQuery takes a functional first approach to jQuery, with the eventual aim of implementing all functions that are in jQuery.
 	It is aiming to provide the syntactical sugar that jQuery offers (combined with the syntactical sugar of F# pipes).
 </p>
 
 <p>
-	It is <b>NOT</b> intended to provide browser compatiblity in the way that jQuery originally was. 
+	It is <b>NOT</b> intended to provide browser compatiblity in the way that jQuery originally was.
 	I might also update some jQuery functionality to make it more consistent with modern Javascript standards.
 	There will be no implementation of deprecrated jQuery functions like <b>.click()</b>.
 </p>
@@ -73,11 +73,9 @@ since the item could be either a collection of elements or a Document. For now, 
             |> on "click" "" (fun e -> console.log "Hi" )
             |> addClass "testClass"
             |> removeClass "my-button"
-```				
-
-### Adding and Removing Classes
+```
+### Element Manipulation
 <p>Just like you would in jQuery (that will be a recurring theme), except functions are called with pipe operators rather than on an object.</p>
-<p>There are 3 class functions implemented at this stage.</p>
 
 > #### addClass (className: string)
 <small>Adds a class to the selected elements</small>
@@ -90,27 +88,18 @@ let links = f(%"a[href]") |> addClass "active"
 ```f#
 let links = f(%"a[href]") |> removeClass "active"
 ```
-	
+
 > #### toggleClass (className: string)
 <small>If an element already has a class, remove it. Else add it.</small>
 ```f#
 let links = f(%"a[href]") |> toggleClass "active"
 ```
 
-> #### Not yet implemented
-<p>jQuery allows you to pass an array of class names to the class functions. I do not intend to overload the addClass or removeClass functions,
-but will likely implement separate <b>addClasses</b> and <b>removeClasses</b> functions for handling more than one at once.
-</p>
-
-
-### Attributes and Style functions
-<p>The functions here have the same name as the original jQuery functions.</p>
-
 > #### attr (attribute: string) (value: string)
 <small>Sets an attribute on selected elements.</small>
 
 ```f#
-let links = f(%"a[href]") 
+let links = f(%"a[href]")
 		|> attr "href" "https://github.com"
 ```
 
@@ -119,9 +108,60 @@ let links = f(%"a[href]")
 <small>Sets a CSS property of the selected elements</small>
 
 ```f#
-let links = f(%"a[href]") 
+let links = f(%"a[href]")
 		|> css "color" "red"
 		|> css "background-color" "blue"
+```
+
+> #### text (value: string)
+<small>
+Sets the text value of selected elements.
+Unlike the jQuery function which is used to both get
+and set text, this function can only set text so that it can
+be used in pipes. To get the text from selected elements use
+getText instead.
+</small>
+
+```f#
+let headings = f(%"h1")
+                |> css "font-size" "3em"
+                |> text "This is a heading"
+                |> addClass "heading"
+```
+
+> #### getText
+<small>
+    Retrieves the text value of the selected elements.
+    Returns a string.
+</small>
+
+```f#
+let heading = f(%"h1:first-of-type") |> getText
+```
+
+> #### html (value: string)
+<small>
+Sets the inner HTML value of selected elements.
+Unlike the jQuery function which is used to both get
+and set html, this function can only set, so that it can
+be used in pipes. To get the inner html from selected elements use
+getHTML instead.
+</small>
+
+```f#
+let headings = f(%"h1")
+                |> css "font-size" "3em"
+                |> html "<small>This is a heading</small>"
+```
+
+> #### getHtml
+<small>
+    Retrieves the inner html value of the selected elements.
+    Returns a string.
+</small>
+
+```f#
+let heading = f(%"h1:fi**rst-of-type") |> getHtml
 ```
 
 > #### Not yet implemented
@@ -134,31 +174,31 @@ let links = f(%"a[href]")
 
 ```f#
 let firstParagraph = f(%"p") |> first
-```	
+```
 
 > #### last
 <small>Returns the last item in an fQuery collection</small>
 ```f#
 let lastParagraph = f(%"p") |> last
-```	
+```
 
 ### Event Handlers ###
 <p>
-	I love the way jQuery handles event handlers, and fQuery replicates that to the best of it's ability, providing 
+	I love the way jQuery handles event handlers, and fQuery replicates that to the best of it's ability, providing
 	near-identical syntax.
 </p>
 <p>
-	jQuery has an overloaded definition for it's event functions, fQuery does not. It uses a single function with 3 parameters. 
+	jQuery has an overloaded definition for it's event functions, fQuery does not. It uses a single function with 3 parameters.
 	You can leave the 2nd parameter as an empty string if you don't need it, the I would recommend attaching all events to the body/document
 	and using the second parameter.
-</p>	
+</p>
 
 > #### on (eventName: string) (selector: string or "") (callback: function Event -> unit)
 <small>
 Attaches an event to the selected elements.
-The first argument is the name of the event. It can also be a comma separated list of events. 
-The second argument is a query selector.  If it is left as an empty string, the event will be attached directly to selected element. 
-If a selector is specified, the event will only be fired if an element matching the selector is the event target. 
+The first argument is the name of the event. It can also be a comma separated list of events.
+The second argument is a query selector.  If it is left as an empty string, the event will be attached directly to selected element.
+If a selector is specified, the event will only be fired if an element matching the selector is the event target.
 </small>
 
 ```f#
@@ -195,15 +235,15 @@ Starting from the selected elements, traverses upwards to find the first ancesto
 ```f#
 f(%"span.selected")
 	|> closest "div"
-```	
+```
 
 >#### parent (selector: string)
 <small>
-Selects the direct parent of the selected element. 
-Selector can be either an empty string "" or a query selector. 
+Selects the direct parent of the selected element.
+Selector can be either an empty string "" or a query selector.
 If a selector is passed in, then if the parent does not match that selector it will be filtered out.
 </small>
 
 ```f#
 f(%"span.selected")|> parent
-```	
+```
