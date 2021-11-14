@@ -38,7 +38,7 @@
 f(%"div.className#id")
 ```
 
-<p>`f()` can take either a String, an Element or the document itself.</p>
+<p>f() can take either a String, an Element or the document itself.</p>
 
 ```f#
 let fQueryDocument = f(%document)
@@ -74,26 +74,26 @@ At this stage, f() returns a collection of HTMLElements. Originally it returned 
 ### Element Manipulation
 <p>Just like you would in jQuery (that will be a recurring theme), except functions are called with pipe operators rather than on an object.</p>
 
-> #### addClass (className: string)
-<small>Adds a class to the selected elements</small>
+>> #### addClass (className: string) : fQuery
+><small>Adds a class to the selected elements</small>
 ```f#
 let links = f(%"a[href]") |> addClass "active"
 ```
 
-> #### removeClass (className: string)
-<small>Removes a class from the selected elements</small>
+>> #### removeClass (className: string) : fQuery
+><small>Removes a class from the selected elements</small>
 ```f#
 let links = f(%"a[href]") |> removeClass "active"
 ```
 
-> #### toggleClass (className: string)
-<small>If an element already has a class, remove it. Else add it.</small>
+>> #### toggleClass (className: string) : fQuery
+><small>If an element already has a class, remove it. Else add it.</small>
 ```f#
 let links = f(%"a[href]") |> toggleClass "active"
 ```
 
-> #### attr (attribute: string) (value: string)
-<small>Sets an attribute on selected elements.</small>
+>> #### attr (attribute: string) (value: string) : fQuery
+><small>Sets an attribute on selected elements.</small>
 
 ```f#
 let links = f(%"a[href]")
@@ -101,8 +101,8 @@ let links = f(%"a[href]")
 ```
 
 
-> #### css (property: string) (value: string)
-<small>Sets a CSS property of the selected elements</small>
+>> #### css (property: string) (value: string) : fQuery
+><small>Sets a CSS property of the selected elements</small>
 
 ```f#
 let links = f(%"a[href]")
@@ -110,14 +110,14 @@ let links = f(%"a[href]")
 		|> css "background-color" "blue"
 ```
 
-> #### text (value: string)
-<small>
-Sets the text value of selected elements.
-Unlike the jQuery function which is used to both get
-and set text, this function can only set text so that it can
-be used in pipes. To get the text from selected elements use
-getText instead.
-</small>
+>> #### text (value: string) : fQuery
+><small>
+>Sets the text value of selected elements.
+>Unlike the jQuery function which is used to both get
+>and set text, this function can only set text so that it can
+>be used in pipes. To get the text from selected elements use
+>getText instead.
+></small>
 
 ```f#
 let headings = f(%"h1")
@@ -126,24 +126,24 @@ let headings = f(%"h1")
                 |> addClass "heading"
 ```
 
-> #### getText
-<small>
-    Retrieves the text value of the selected elements.
-    Returns a string.
-</small>
+>> #### getText : string
+><small>
+>    Retrieves the text value of the selected elements.
+>    Returns a string.
+></small>
 
 ```f#
 let heading = f(%"h1:first-of-type") |> getText
 ```
 
-> #### html (value: string)
-<small>
-Sets the inner HTML value of selected elements.
-Unlike the jQuery function which is used to both get
-and set html, this function can only set, so that it can
-be used in pipes. To get the inner html from selected elements use
-getHTML instead.
-</small>
+>> #### html (value: string) : fQuery
+><small>
+>Sets the inner HTML value of selected elements.
+>Unlike the jQuery function which is used to both get
+>and set html, this function can only set, so that it can
+>be used in pipes. To get the inner html from selected elements use
+>getHTML instead.
+></small>
 
 ```f#
 let headings = f(%"h1")
@@ -151,30 +151,45 @@ let headings = f(%"h1")
                 |> html "<small>This is a heading</small>"
 ```
 
-> #### getHtml
-<small>
-    Retrieves the inner html value of the selected elements.
-    Returns a string.
-</small>
-
+>> #### getHtml : string
+><small>
+>    Retrieves the inner html value of the selected elements.
+>Returns a string.
+></small>
 ```f#
 let heading = f(%"h1:fi**rst-of-type") |> getHtml
 ```
 
-> #### Not yet implemented
-<p>I'm probably not aware of all of jQuery's functions, <b>prop()</b> is probably the largest and most important to implement.</p>
+>>#### is (selector: string) : boolean
+> Checks to see if at least one of the selected elements
+> matches the provided selector. <b>is</b> breaks the pipeline
+> as it returns a boolean.
+```f#
+let paragraphs = $("%p") |> is "div"
+```
+
+>>#### isFilter (selector: string) : fQuery
+> Filters the selected elements to those that match the selector
+> Unlike <b>is</b>, isFilter does not break the pipeline, so you
+> can continue passing the result to other fQuery functions.
+```f#
+    let paragraphs = $("%p") |> is ".className"
+```
+
+>> #### Not yet implemented
+><p>I'm probably not aware of all of jQuery's functions, <b>prop()</b> is probably the largest and most important to implement.</p>
 
 ### Plucking from the fQuery collection
 
-> #### first
-<small>Returns the first item in an fQuery collection</small>
+>> #### first : fQuery
+><small>Gives the first item in an fQuery collection</small>
 
 ```f#
 let firstParagraph = f(%"p") |> first
 ```
 
-> #### last
-<small>Returns the last item in an fQuery collection</small>
+>> #### last : fQuery
+><small>Gives the last item in an fQuery collection</small>
 ```f#
 let lastParagraph = f(%"p") |> last
 ```
@@ -185,19 +200,18 @@ let lastParagraph = f(%"p") |> last
 	near-identical syntax.
 </p>
 <p>
-
 	jQuery has an overloaded definition for it's event functions, fQuery does not. It uses a single function with 3 parameters.
 	You can leave the 2nd parameter as an empty string if you don't need it, though I would recommend attaching all events to the body/document
 	and using the second parameter.
 </p>
 
-> #### on (eventName: string) (selector: string or "") (callback: function Event -> unit)
-<small>
-Attaches an event to the selected elements.
-The first argument is the name of the event. It can also be a comma separated list of events.
-The second argument is a query selector.  If it is left as an empty string, the event will be attached directly to selected element.
-If a selector is specified, the event will only be fired if an element matching the selector is the event target.
-</small>
+>> #### on (eventName: string) (selector: string or "") (callback: function Event -> unit) : fQuery
+><small>
+>Attaches an event to the selected elements.
+>The first argument is the name of the event. It can also be a comma separated list of events.
+>The second argument is a query selector.  If it is left as an empty string, the event will be attached directly to selected element.
+>If a selector is specified, the event will only be fired if an element matching the selector is the event target.
+></small>
 
 ```f#
 let docReady e = console.log e
@@ -215,32 +229,32 @@ f (%"body")
 ### Dom Traversal Functions
 <p>Lots to implement here, jQuery can do alot with the Dom!</p>
 
->#### find (selector: string)
-<small>
-Starting from the selected elements, finds all descendants that match the given selector.
-</small>
+>>#### find (selector: string) : fQuery
+><small>
+>Starting from the selected elements, finds all descendants that match the given selector.
+></small>
 
 ```f#
 f(%"div")
     |> find "span.selected"
 ```
 
->#### closest (selector: string)
-<small>
-Starting from the selected elements, traverses upwards to find the first ancestor that matches the selector.
-</small>
+>>#### closest (selector: string) : fQuery
+><small>
+>Starting from the selected elements, traverses upwards to find the first ancestor that matches the selector.
+></small>
 
 ```f#
 f(%"span.selected")
 	|> closest "div"
 ```
 
->#### parent (selector: string)
-<small>
-Selects the direct parent of the selected element.
-Selector can be either an empty string "" or a query selector.
-If a selector is passed in, then if the parent does not match that selector it will be filtered out.
-</small>
+>>#### parent (selector: string) : fQuery
+><small>
+>Selects the direct parent of the selected element.
+>Selector can be either an empty string "" or a query selector.
+>If a selector is passed in, then if the parent does not match that selector it will be filtered out.
+></small>
 
 ```f#
 f(%"span.selected")|> parent ""

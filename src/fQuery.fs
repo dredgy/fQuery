@@ -72,6 +72,14 @@ let getHtml (fquery: fQuery) =
         |> String.concat ""
 let getHTML = getHtml
 
+let isFilter (selector: string) (fquery: fQuery) : fQuery =
+    fquery
+        |> Array.filter (fun elem -> elem.matches selector)
+
+let is (selector: string) (fquery: fQuery) =
+    let matches = fquery |> isFilter selector
+    matches.Length > 0
+
 (* Dom Traversal *)
 let find (selector: string) (fquery: fQuery) : fQuery =
     fquery
