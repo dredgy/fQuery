@@ -44,17 +44,14 @@ f(%"div.className#id")
 let fQueryDocument = f(%document)
 
 let button = document.querySelector "button"
-let fqueryButton = f(%buttons)
+let fqueryButton = f(%button)
 
 let buttons = f(%"button")
 ```
-
-<p>
-At this stage, f() returns a collection of HTMLElements. Originally it returned a special union type of "fQuery". Currently the fquery type is just defined as HTMLElement[]
-since the item could be either a collection of elements or a Document. For now, I have a workaround but not sure if it will hold when things get more complex.
-</p>
-
 <p>Are all perfectly valid and will return an fQuery type which can be passed to other fQuery functions.</p>
+<p>
+At this stage, f() returns a collection of HTMLElements. Originally it returned a special union type of "fQuery". Since the item could be either a collection of elements or a Document. For now, I have a workaround that means I don't have to handle cases where document is the selected node. I'm not sure if it will hold when things get more complex but in the meantime the fQuery type is simply defined as an alias of HTMLElement[]
+</p>
 
 
 ### Chaining with Pipes
@@ -188,8 +185,13 @@ let lastParagraph = f(%"p") |> last
 	near-identical syntax.
 </p>
 <p>
+<<<<<<< HEAD
 	jQuery has an overloaded definition for it's event functions, fQuery does not. It uses a single function with 3 parameters.
 	You can leave the 2nd parameter as an empty string if you don't need it, the I would recommend attaching all events to the body/document
+=======
+	jQuery has an overloaded definition for it's event functions, fQuery does not. It uses a single function with 3 parameters.
+	You can leave the 2nd parameter as an empty string if you don't need it, though I would recommend attaching all events to the body/document
+>>>>>>> 8db25e3c5a2c9e1dc5f3bcaca28078d836c5c424
 	and using the second parameter.
 </p>
 
@@ -205,7 +207,7 @@ If a selector is specified, the event will only be fired if an element matching 
 let docReady e = console.log e
 f (%document) |> on "ready" "" docReady //fires when the document is ready
 
-f (String "body")
+f (%"body")
     |> on "click" "" (fun _ -> console.log("Body clicked")) //Fires whenever the body is clicked
     |> on "click, mouseover" "button" (fun _ -> console.log("Just a button")) //Only fires if a button is clicked (or hovered over)
 ```
@@ -224,7 +226,7 @@ Starting from the selected elements, finds all descendants that match the given 
 
 ```f#
 f(%"div")
-	|> find "span.selected"
+    |> find "span.selected"
 ```
 
 >#### closest (selector: string)
@@ -234,8 +236,13 @@ Starting from the selected elements, traverses upwards to find the first ancesto
 
 ```f#
 f(%"span.selected")
+<<<<<<< HEAD
 	|> closest "div"
 ```
+=======
+    |> closest "div"
+```
+>>>>>>> 8db25e3c5a2c9e1dc5f3bcaca28078d836c5c424
 
 >#### parent (selector: string)
 <small>
@@ -245,5 +252,10 @@ If a selector is passed in, then if the parent does not match that selector it w
 </small>
 
 ```f#
+<<<<<<< HEAD
 f(%"span.selected")|> parent
 ```
+=======
+f(%"span.selected")|> parent ""
+```
+>>>>>>> 8db25e3c5a2c9e1dc5f3bcaca28078d836c5c424
