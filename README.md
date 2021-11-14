@@ -185,13 +185,9 @@ let lastParagraph = f(%"p") |> last
 	near-identical syntax.
 </p>
 <p>
-<<<<<<< HEAD
-	jQuery has an overloaded definition for it's event functions, fQuery does not. It uses a single function with 3 parameters.
-	You can leave the 2nd parameter as an empty string if you don't need it, the I would recommend attaching all events to the body/document
-=======
+
 	jQuery has an overloaded definition for it's event functions, fQuery does not. It uses a single function with 3 parameters.
 	You can leave the 2nd parameter as an empty string if you don't need it, though I would recommend attaching all events to the body/document
->>>>>>> 8db25e3c5a2c9e1dc5f3bcaca28078d836c5c424
 	and using the second parameter.
 </p>
 
@@ -236,13 +232,8 @@ Starting from the selected elements, traverses upwards to find the first ancesto
 
 ```f#
 f(%"span.selected")
-<<<<<<< HEAD
 	|> closest "div"
 ```
-=======
-    |> closest "div"
-```
->>>>>>> 8db25e3c5a2c9e1dc5f3bcaca28078d836c5c424
 
 >#### parent (selector: string)
 <small>
@@ -252,10 +243,5 @@ If a selector is passed in, then if the parent does not match that selector it w
 </small>
 
 ```f#
-<<<<<<< HEAD
-f(%"span.selected")|> parent
-```
-=======
 f(%"span.selected")|> parent ""
 ```
->>>>>>> 8db25e3c5a2c9e1dc5f3bcaca28078d836c5c424
