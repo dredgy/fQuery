@@ -2,7 +2,7 @@
 open System
 open fQuery
 open Browser
-
+open Fable.Core.JsInterop
 
 let bodyClicked _ = console.log "Body Clicked"
 
@@ -12,29 +12,11 @@ type person = {
 
 let docReady e =
     let x =
-        f(%"div")
-            |> css "background-color" "red"
-            |> addClass "divClass"
-            |> data "testData" {name="Josh"}
-            |> find "p.select"
-            |> first
-            |> parent ""
-            |> closest ".test"
-            |> css "color" "blue"
-            |> attr "id" "wooble"
-            |> on "click" "" (fun e -> console.log "Hi" )
-            |> removeClass "testClass"
-            |> text "This is the selected div"
-            |> getData<person> "testData"
+        f %"p.select"
+            |> data "wooble" "wobble"
+            |> getData<person> "test-data"
 
-    console.log(x)
-
-    let y = f(%".subTest")
-                |> attr "test" "test"
-
-    console.log y
-    ()
-
+    console.log x.Value
 
 f(%document)
     |> on "ready" "" docReady

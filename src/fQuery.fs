@@ -7,6 +7,7 @@ open Fable.Core
 open Browser.Dom
 open Browser.CssExtensions
 open FSharp.Core
+open Thoth.Json
 
 let inline (~%) (x: ^A) : ^B = (^B : (static member From: ^A -> ^B) x)
 
@@ -74,6 +75,8 @@ let getAttr (attribute: string) fquery =
      if result.Length > 0 then result.[0]
      else ""
 
+let value (value: string) fquery = fquery |> attr "value" value
+let getValue fquery = getAttr "value" fquery
 
 let text (value: string) fquery =
     let elementFunc = fun (element: HTMLElement) -> element.innerText <- value
@@ -172,6 +175,11 @@ let toggleClass (className: string) fquery =
     let elementFunc = fun (elem: HTMLElement) -> elem.classList.toggle className |> ignore
     applyFunctionToAllElements elementFunc fquery
 
+let hasClassFilter (className: string) fquery = fquery |> isFilter("."+className)
+
+let hasClass (className: string) fquery = (fquery |> hasClassFilter className).Length > 0
+
+
 
 
 (* Data *)
@@ -181,20 +189,45 @@ type dataStorage() =
     member this.saveData (element: HTMLElement) (key: string) (value: 'a) =
         let boxedValue = box value
         if _storage.has(element) then
-          _storage.delete(element) |> ignore
-        _storage.set(element, Map.empty.Add(key, boxedValue)) |> ignore
+          let existingData : Map<string, obj> = _storage.get(element)
+          if existingData.ContainsKey key then
+              let oldData = existingData.Remove key
+              let newData = oldData.Add(key, value)
+              _storage.set(element, newData) |> ignore
+          else
+              let newData = existingData.Add(key, value)
+              _storage.set(element, newData) |> ignore
+        else _storage.set(element, Map.empty.Add(key, boxedValue)) |> ignore
 
-    member this.getData (element: HTMLElement) (key: String) = _storage.get(element)
+    member inline this.getData<'a> (element: HTMLElement) (key: String) =
+        let data = _storage.get(element)
+        let value = data.TryFind key
+        match value with
+            | Some _ -> value |> Option.bind Option.ofObj
+            | None ->
+                let dataAttribute = "data-"+key
+                match element.hasAttribute(dataAttribute) with
+                | false -> None
+                | true ->
+                    let attributeValue = element.getAttribute(dataAttribute)
+                    let decodedAttribute = Decode.Auto.fromString<'a>(attributeValue)
+                    match decodedAttribute with
+                        | Error _ -> Some (box attributeValue)
+                        | Ok decodedValue -> Some (box decodedValue)
+
 
 let storedData = dataStorage()
 
 let data (key: string) (value: 'a) (fquery: fQuery) =
-    fquery |> Array.iter(
-        fun elem ->
-            storedData.saveData elem key value
-    )
+    fquery |> Array.iter(fun element -> storedData.saveData element key value)
     fquery
 
-let getData<'a> key (fquery: fQuery): 'a =
-    let data = fquery |> Array.map(fun elem -> storedData.getData elem key)
-    unbox data.[0].[key]
+let inline getData<'a> key (fquery: fQuery): 'a Option =
+    let data =
+        fquery
+            |> Array.map(fun element -> storedData.getData<'a> element key)
+            |> Array.tryHead
+
+    match data with
+        | Some result -> unbox result
+        | None -> None
