@@ -13,7 +13,6 @@ type person = {
 let docReady e =
     let x =
         f %"p.select"
-            |> data "wooble" "wobble"
             |> getData<person> "test-data"
 
     console.log x.Value

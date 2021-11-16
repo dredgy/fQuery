@@ -200,7 +200,10 @@ type dataStorage() =
         else _storage.set(element, Map.empty.Add(key, boxedValue)) |> ignore
 
     member inline this.getData<'a> (element: HTMLElement) (key: String) =
-        let data = _storage.get(element)
+        let data =
+            if _storage.has(element) then _storage.get(element)
+            else Map.empty
+
         let value = data.TryFind key
         match value with
             | Some _ -> value |> Option.bind Option.ofObj
