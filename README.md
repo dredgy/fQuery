@@ -303,7 +303,7 @@ f(%"body") |> data "person" {|name="Josh"|}
  let personData =
     f(%"body")
         |> data "person" {|name="Josh"|}
-        |> getData<{name:string}> "person"
+        |> getData<{|name:string|}> "person"
 
   console.log personData.Value
 ```

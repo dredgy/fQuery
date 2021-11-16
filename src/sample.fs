@@ -11,11 +11,12 @@ type person = {
 }
 
 let docReady e =
-    let x =
-        f %"p.select"
-            |> getData<person> "test-data"
+    let personData =
+       f(%"body")
+           |> data "person" {|name="Josh"|}
+           |> getData<{|name:string|}> "person"
 
-    console.log x.Value
+    console.log personData
 
 f(%document)
     |> on "ready" "" docReady
