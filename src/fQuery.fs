@@ -5,6 +5,7 @@ open System
 open Browser.Types
 open Fable.Core
 open Browser.Dom
+open Browser.DomExtensions
 open Browser.CssExtensions
 open FSharp.Core
 open Thoth.Json
@@ -14,7 +15,6 @@ let inline (~%) (x: ^A) : ^B = (^B : (static member From: ^A -> ^B) x)
 let array (list: NodeList) : HTMLElement[] = JS.Constructors.Array.from list
 
 type fQuery = HTMLElement[]
-
 
 type selector =
     | String of string
@@ -99,8 +99,10 @@ let getHtml (fquery: fQuery) =
 let getHTML = getHtml
 
 let isFilter (selector: string) (fquery: fQuery) : fQuery =
+    if selector <> "" then
     fquery
         |> Array.filter (fun elem -> elem.matches selector)
+    else fquery
 
 let is (selector: string) (fquery: fQuery) =
     let matches = fquery |> isFilter selector
@@ -122,14 +124,42 @@ let closest (selector: string) (fquery: fQuery) : fQuery =
 
 let parent (selector: string) (fquery: fQuery) : fQuery =
     fquery
-        |> Array.filter(
-            fun elem ->
-                if selector <> "" then
-                    elem.parentElement <> null && elem.parentElement.matches selector
-                else elem.parentElement <> null
-            )
         |> Array.map (fun elem -> elem.parentElement)
+        |> isFilter selector
 
+let children (selector: string) (fquery: fQuery) : fQuery =
+    fquery
+        |> Array.map(
+            fun parent ->
+                let childArray: HTMLElement[] = parent.children |> JS.Constructors.Array.from
+                childArray
+        )
+        |> Array.concat
+        |> Array.distinct
+        |> isFilter selector
+
+
+let rec getNextElement (element: HTMLElement) : HTMLElement =
+    let nextSibling = element.nextSibling :?> HTMLElement
+    if nextSibling = null || nextSibling.nodeType = Node.ELEMENT_NODE then
+        nextSibling
+    else getNextElement (nextSibling)
+
+let rec getPrevElement (element: HTMLElement) : HTMLElement =
+    let prevSibling = element.previousSibling :?> HTMLElement
+    if prevSibling = null || prevSibling.nodeType = Node.ELEMENT_NODE then
+        prevSibling
+    else getPrevElement (prevSibling)
+
+let prevOrNext (direction: string) (selector: string) (fquery: fQuery) =
+    let funcToUse = if direction = "next" then getNextElement else getPrevElement
+    fquery
+        |> Array.map funcToUse
+        |> Array.filter (fun elem -> elem <> null)
+        |> isFilter selector
+
+let next (selector: string) (fquery: fQuery) = prevOrNext "next" selector fquery
+let prev (selector: string) (fquery: fQuery) = prevOrNext "prev" selector fquery
 
 let private getEventStringAlias event =
     match event with
@@ -209,6 +239,7 @@ type dataStorage() =
             | Some _ -> value |> Option.bind Option.ofObj
             | None ->
                 let dataAttribute = "data-"+key
+
                 match element.hasAttribute(dataAttribute) with
                 | false -> None
                 | true ->

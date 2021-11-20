@@ -333,11 +333,22 @@ f(%"span.selected")
 
 >>#### parent (selector: string) : fQuery
 ><small>
->Selects the direct parent of the selected element.
+>Selects the direct parents of the selected elements.
 >Selector can be either an empty string "" or a query selector.
 >If a selector is passed in, then if the parent does not match that selector it will be filtered out.
 ></small>
 
 ```f#
 f(%"span.selected")|> parent ""
+```
+
+>>#### parent (selector: string) : fQuery
+><small>
+>Selects all direct children of the selected elements.
+>Selector can be either an empty string "" or a query selector.
+>If a selector is passed in, then if the children do not match that selector, they will be filtered out.
+></small>
+
+```f#
+f(%"span.selected")|> children ""
 ```

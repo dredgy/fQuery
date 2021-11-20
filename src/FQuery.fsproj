@@ -4,12 +4,13 @@
     <RootNamespace>App</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="jQuery.fs" />
     <Compile Include="fQuery.fs" />
     <Compile Include="sample.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fable.Browser.Css" Version="2.1.0" />
-    <PackageReference Include="Fable.Browser.Dom" Version="2.6.0" />
+    <PackageReference Include="Fable.Browser.Dom" Version="2.7.0" />
     <PackageReference Include="Fable.Core" Version="3.4.0" />
     <PackageReference Include="Thoth.Json" Version="6.0.0" />
   </ItemGroup>

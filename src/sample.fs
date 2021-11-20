@@ -1,6 +1,7 @@
 ﻿module sample
 open System
 open fQuery
+open jQuery
 open Browser
 open Fable.Core.JsInterop
 
@@ -10,11 +11,25 @@ type person = {
     name: String
 }
 
-let docReady e =
+let docReady _ =
+
+    let div = j("div")
+    div.on("click", (fun e -> j(e).text("div") 
+                     ))
+
+
     let personData =
-       f(%"body")
-           |> data "person" {|name="Josh"|}
-           |> getData<{|name:string|}> "person"
+       f(%"div")
+           |> next ""
+           |> prev ""
+           |> children ""
+           |> children ""
+           |> first
+           |> css "display" "block"
+           |> css "height" "200px"
+           |> css "width" "200px"
+           |> css "background-color" "black"
+           |> css "color" "white"
 
     console.log personData
 
