@@ -14,9 +14,10 @@ type person = {
 let docReady _ =
 
     let div = j("div")
-    div.on("click", (fun e -> j(e).text("div") 
-                     ))
-
+    div
+        .on("click", "selector", (fun e -> j(e.target).text("div") |> ignore ))
+        .attr("id", "name")
+        |> ignore
 
     let personData =
        f(%"div")

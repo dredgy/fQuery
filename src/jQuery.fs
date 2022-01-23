@@ -37,7 +37,5 @@ type jQuery =
       abstract data : string -> obj
       abstract hasClass : string -> bool
 
-
 [<Emit("window['$']($0)")>]
-let j (selector: string) : jQuery = jsNative
-
+let j (selector: 'a) : jQuery = jsNative

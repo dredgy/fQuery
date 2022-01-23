@@ -100,7 +100,7 @@ let getHTML = getHtml
 
 let isFilter (selector: string) (fquery: fQuery) : fQuery =
     if selector <> "" then
-    fquery
+        fquery
         |> Array.filter (fun elem -> elem.matches selector)
     else fquery
 
@@ -151,7 +151,7 @@ let rec getPrevElement (element: HTMLElement) : HTMLElement =
         prevSibling
     else getPrevElement (prevSibling)
 
-let prevOrNext (direction: string) (selector: string) (fquery: fQuery) =
+let private prevOrNext (direction: string) (selector: string) (fquery: fQuery) =
     let funcToUse = if direction = "next" then getNextElement else getPrevElement
     fquery
         |> Array.map funcToUse
@@ -173,13 +173,12 @@ let private eventOnTarget (e: Event) (selector: string) (callback: Event->unit) 
         callback e
 
 (* Event Handling Function *)
-let on (event: string) (selector: string) (callback: Event -> unit) fquery =
+let on (event: string) (selector: string) (callback: Event -> unit) (fquery: fQuery) =
     let events = event.Split ','
 
     events |> Array.iter (fun event ->
     let eventString = getEventStringAlias (event.Trim())
-    let elements = get fquery
-    elements |> Array.iter (
+    fquery |> Array.iter (
         fun elem ->
             if selector = "" then
                 if event = "ready" then
@@ -190,6 +189,7 @@ let on (event: string) (selector: string) (callback: Event -> unit) fquery =
        )
     )
     fquery
+
 
 (* Class Functions *)
 
