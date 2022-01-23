@@ -13,12 +13,6 @@ type person = {
 
 let docReady _ =
 
-    let div = j("div")
-    div
-        .on("click", "selector", (fun e -> j(e.target).text("div") |> ignore ))
-        .attr("id", "name")
-        |> ignore
-
     let personData =
        f(%"div")
            |> next ""
@@ -29,8 +23,11 @@ let docReady _ =
            |> css "display" "block"
            |> css "height" "200px"
            |> css "width" "200px"
+           |> css "display" "flex"
            |> css "background-color" "black"
            |> css "color" "white"
+           |> hide
+           |> toggle
 
     console.log personData
 

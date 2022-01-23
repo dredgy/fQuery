@@ -60,6 +60,13 @@ let css (property: string) (value: string) fquery =
     let elementFunc = fun (elem: HTMLElement) -> elem.style.setProperty(property, value)
     applyFunctionToAllElements elementFunc fquery
 
+let getCss (property: string) (fquery: fQuery) =
+    if fquery.Length > 0 then
+        let styles = window.getComputedStyle(fquery.[0])
+        Some (styles.getPropertyValue(property))
+    else None
+
+
 let attr (attribute: string) (value: string) fquery =
      let elementFunc = fun (elem: HTMLElement) -> elem.setAttribute(attribute, value)
      applyFunctionToAllElements elementFunc fquery
@@ -161,6 +168,8 @@ let private prevOrNext (direction: string) (selector: string) (fquery: fQuery) =
 let next (selector: string) (fquery: fQuery) = prevOrNext "next" selector fquery
 let prev (selector: string) (fquery: fQuery) = prevOrNext "prev" selector fquery
 
+
+
 let private getEventStringAlias event =
     match event with
     | "ready" -> "DOMContentLoaded"
@@ -208,8 +217,6 @@ let toggleClass (className: string) fquery =
 let hasClassFilter (className: string) fquery = fquery |> isFilter("."+className)
 
 let hasClass (className: string) fquery = (fquery |> hasClassFilter className).Length > 0
-
-
 
 
 (* Data *)
@@ -265,3 +272,36 @@ let inline getData<'a> key (fquery: fQuery): 'a Option =
     match data with
         | Some result -> unbox result
         | None -> None
+
+
+let private getDisplay fquery =
+    match (fquery |> (getCss "display")) with
+        | Some display -> display
+        | None -> "initial"
+
+(* Hide and Show *)
+let hide (fquery: fQuery) =
+    let displayValue = getDisplay fquery
+    fquery
+    |> css "display" "none"
+    |> data "previous-display" displayValue
+
+let show (fquery: fQuery) =
+    let displayValue : string =
+        match (fquery |> getData "previous-display") with
+         | Some display -> display
+         | None -> "initial"
+
+    fquery |> css "display" displayValue
+
+let toggle fquery =
+    let displayValue = getDisplay fquery
+    match displayValue with
+        | "none" -> show fquery
+        | _ -> hide fquery
+
+let toggleBool (hideOrShow: bool) fquery =
+    match hideOrShow with
+        | true -> show fquery
+        | false -> hide fquery
+

@@ -36,6 +36,10 @@ type jQuery =
       abstract data : string * string -> jQuery
       abstract data : string -> obj
       abstract hasClass : string -> bool
+      abstract hide : unit -> jQuery
+      abstract show : unit -> jQuery
+      abstract toggle : unit -> jQuery
+      abstract toggle : bool -> jQuery
 
 [<Emit("window['$']($0)")>]
 let j (selector: 'a) : jQuery = jsNative
